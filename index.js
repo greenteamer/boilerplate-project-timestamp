@@ -19,19 +19,31 @@ app.get("/", function (req, res) {
 });
 
 // your first API endpoint...
+app.get("/api/", function (req, res) {
+  console.log("is empty string");
+  const unix = new Date().getTime();
+  const utc = new Date().toUTCString();
+  console.log({ unix, utc });
+  res.json({ unix, utc });
+});
+
 app.get("/api/:date", function (req, res) {
-  const numberRegex = new RegExp(/^(\d+)*$/);
+  const numberRegex = new RegExp(/^(\d+){1,}$/);
   const dateStr = req.params.date;
+  console.log("dateStr: ", dateStr);
   if (!isNaN(Date.parse(dateStr))) {
+    console.log("parsed");
     const unix = new Date(dateStr).getTime();
     const utc = new Date(dateStr).toUTCString();
     res.json({ unix, utc });
   } else if (dateStr.match(numberRegex)) {
+    console.log("reg match");
     const parsedDate = parseInt(dateStr);
     const unix = new Date(parsedDate).getTime();
     const utc = new Date(parsedDate).toUTCString();
     res.json({ unix, utc });
   } else {
+    console.log("error");
     res.json({ error: "Invalid Date" });
   }
 });
