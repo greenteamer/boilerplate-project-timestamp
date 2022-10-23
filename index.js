@@ -20,14 +20,20 @@ app.get("/", function (req, res) {
 
 // your first API endpoint...
 app.get("/api/:date", function (req, res) {
-  let unix = new Date(req.params.date).getTime();
-  let utc = new Date(req.params.date).toUTCString();
-  if (isNaN(unix)) {
-    const parsedDate = parseInt(req.params.date);
-    unix = new Date(parsedDate).getTime();
-    utc = new Date(parsedDate).toUTCString();
+  const numberRegex = new RegExp(/^(\d+)*$/);
+  const formatRegex = new RegExp(/^(\d+)*-(\d+)*-(\d+)*$/);
+  const dateStr = req.params.date;
+  if (dateStr.match(numberRegex)) {
+    const parsedDate = parseInt(dateStr);
+    const unix = new Date(parsedDate).getTime();
+    const utc = new Date(parsedDate).toUTCString();
+    res.json({ unix, utc });
   }
-  res.json({ unix, utc });
+  if (dateStr.match(formatRegex)) {
+    const unix = new Date(dateStr).getTime();
+    const utc = new Date(dateStr).toUTCString();
+    res.json({ unix, utc });
+  }
 });
 
 // listen for requests :)
